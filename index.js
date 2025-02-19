@@ -27,12 +27,25 @@ app.post('/add-to-json', (req, res) => {
                 return res.status(500).send('Błąd przy zapisie do pliku');
             }
 
-            // Logowanie zawartości pliku w logach
-            console.log('Zaktualizowany plik JSON:', JSON.stringify(jsonData, null, 2));
-
             // Odpowiadamy, że dane zostały zapisane
             res.send('Dane zostały dodane do pliku JSON');
         });
+    });
+});
+
+// Trasa GET do zwrócenia zawartości pliku JSON
+app.get('/view-json', (req, res) => {
+    const filePath = path.join(__dirname, 'data.json');
+    
+    // Odczytujemy plik JSON
+    fs.readFile(filePath, 'utf8', (err, data) => {
+        if (err) {
+            return res.status(500).send('Błąd przy odczycie pliku');
+        }
+
+        // Zwracamy zawartość pliku JSON w odpowiedzi
+        res.header("Content-Type", "application/json");
+        res.send(data);  // Zwracamy zawartość pliku JSON
     });
 });
 
