@@ -3,31 +3,36 @@ const fs = require('fs');
 const path = require('path');
 const app = express();
 
-app.use(express.json());  // Middleware do parsowania JSON
+app.use(express.json()); // Middleware do parsowania JSON
+
+const filePath = path.join(__dirname, 'data.json');
+
+// Tworzymy plik JSON, jeśli nie istnieje
+if (!fs.existsSync(filePath)) {
+    fs.writeFileSync(filePath, JSON.stringify([], null, 2), 'utf8');
+}
 
 // Trasa do obsługi POST dla /add-to-json
 app.post('/add-to-json', (req, res) => {
-    const filePath = path.join(__dirname, 'data.json');
-    
-    // Odczytujemy istniejący plik JSON
+    const { discord_id, hwid, pc_name } = req.body;
+    const date = new Date().toISOString();
+
+    if (!discord_id || !hwid || !pc_name) {
+        return res.status(400).send('Brak wymaganych danych!');
+    }
+
     fs.readFile(filePath, 'utf8', (err, data) => {
         if (err) {
             return res.status(500).send('Błąd przy odczycie pliku');
         }
 
-        // Parsujemy dane JSON
         let jsonData = JSON.parse(data);
+        jsonData.push({ discord_id, date, hwid, pc_name });
 
-        // Dodajemy nowy element (np. 1)
-        jsonData.push(req.body.data);
-
-        // Zapisujemy zaktualizowane dane do pliku
         fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), 'utf8', (err) => {
             if (err) {
                 return res.status(500).send('Błąd przy zapisie do pliku');
             }
-
-            // Odpowiadamy, że dane zostały zapisane
             res.send('Dane zostały dodane do pliku JSON');
         });
     });
@@ -35,21 +40,16 @@ app.post('/add-to-json', (req, res) => {
 
 // Trasa GET do zwrócenia zawartości pliku JSON
 app.get('/view-json', (req, res) => {
-    const filePath = path.join(__dirname, 'data.json');
-    
-    // Odczytujemy plik JSON
     fs.readFile(filePath, 'utf8', (err, data) => {
         if (err) {
             return res.status(500).send('Błąd przy odczycie pliku');
         }
-
-        // Zwracamy zawartość pliku JSON w odpowiedzi
         res.header("Content-Type", "application/json");
-        res.send(data);  // Zwracamy zawartość pliku JSON
+        res.send(data);
     });
 });
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
-    console.log(`Serwer dziwwwwwwwwwała na porcie ${port}`);
+    console.log(`Serwer działa na porcie ${port}`);
 });
