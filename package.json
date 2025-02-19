@@ -1,0 +1,14 @@
+{
+  "name": "railway-backend",
+  "version": "1.0.0",
+  "description": "Backend Node.js do obsługi zapytań i zapisywania danych do pliku JSON",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "author": "Twoje imię",
+  "license": "MIT"
+}
