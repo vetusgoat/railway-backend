@@ -1,37 +1,42 @@
 const express = require('express');
 const fs = require('fs');
+const path = require('path');
 const app = express();
 
-// Użyj middleware do parsowania JSON
-app.use(express.json());
+app.use(express.json());  // Middleware do parsowania JSON
 
-// Endpoint do dodawania danych do JSON
+// Trasa do obsługi POST dla /add-to-json
 app.post('/add-to-json', (req, res) => {
-    const newData = req.body.data;  // Przykładowe dane, np. "1"
-    const filePath = './data.json';
-
-    // Odczytanie pliku JSON, dodanie nowej wartości, zapisanie z powrotem
-    fs.readFile(filePath, (err, data) => {
+    const filePath = path.join(__dirname, 'data.json');
+    
+    // Odczytujemy istniejący plik JSON
+    fs.readFile(filePath, 'utf8', (err, data) => {
         if (err) {
-            res.status(500).send('Błąd odczytu pliku.');
-            return;
+            return res.status(500).send('Błąd przy odczycie pliku');
         }
 
+        // Parsujemy dane JSON
         let jsonData = JSON.parse(data);
-        jsonData.push(newData);  // Dodanie nowego elementu do tablicy
 
-        fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), (err) => {
+        // Dodajemy nowy element (np. 1)
+        jsonData.push(req.body.data);
+
+        // Zapisujemy zaktualizowane dane do pliku
+        fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), 'utf8', (err) => {
             if (err) {
-                res.status(500).send('Błąd zapisu pliku.');
-                return;
+                return res.status(500).send('Błąd przy zapisie do pliku');
             }
-            res.status(200).send('Dane dodane do JSON!');
+
+            // Logowanie zawartości pliku w logach
+            console.log('Zaktualizowany plik JSON:', JSON.stringify(jsonData, null, 2));
+
+            // Odpowiadamy, że dane zostały zapisane
+            res.send('Dane zostały dodane do pliku JSON');
         });
     });
 });
 
-// Uruchomienie serwera
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 app.listen(port, () => {
     console.log(`Serwer działa na porcie ${port}`);
 });
