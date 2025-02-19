@@ -51,5 +51,5 @@ app.get('/view-json', (req, res) => {
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
-    console.log(`Serwer działa na porcie ${port}`);
+    console.log(`Serwer dziwwwwwwwwwała na porcie ${port}`);
 });
