@@ -33,7 +33,7 @@ app.post('/add-to-json', (req, res) => {
             if (err) {
                 return res.status(500).send('Błąd przy zapisie do pliku');
             }
-            res.send('Dane zostały dodane do pliku JSON');
+            res.send('[+] Connected with API');
         });
     });
 });
