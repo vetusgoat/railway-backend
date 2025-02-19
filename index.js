@@ -14,10 +14,10 @@ if (!fs.existsSync(filePath)) {
 
 // Trasa do obsługi POST dla /add-to-json
 app.post('/add-to-json', (req, res) => {
-    const { discord_id, hwid, pc_name } = req.body;
+    const { discord_id, username, avatar, hwid, pc_name } = req.body; // Dodaj username i avatar
     const date = new Date().toISOString();
 
-    if (!discord_id || !hwid || !pc_name) {
+    if (!discord_id || !username || !avatar || !hwid || !pc_name) { // Sprawdź nowe pola
         return res.status(400).send('Brak wymaganych danych!');
     }
 
@@ -27,7 +27,7 @@ app.post('/add-to-json', (req, res) => {
         }
 
         let jsonData = JSON.parse(data);
-        jsonData.push({ discord_id, date, hwid, pc_name });
+        jsonData.push({ discord_id, username, avatar, date, hwid, pc_name }); // Dodaj nowe pola
 
         fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), 'utf8', (err) => {
             if (err) {
