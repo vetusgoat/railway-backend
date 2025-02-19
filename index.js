@@ -18,12 +18,12 @@ app.post('/add-to-json', (req, res) => {
     const date = new Date().toISOString();
 
     if (!discord_id || !hwid || !pc_name) {
-        return res.status(400).send('Brak wymaganych danych!');
+        return res.status(400).send('[-] Error 02');
     }
 
     fs.readFile(filePath, 'utf8', (err, data) => {
         if (err) {
-            return res.status(500).send('Błąd przy odczycie pliku');
+            return res.status(500).send('[-] Error 01');
         }
 
         let jsonData = JSON.parse(data);
@@ -31,7 +31,7 @@ app.post('/add-to-json', (req, res) => {
 
         fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), 'utf8', (err) => {
             if (err) {
-                return res.status(500).send('Błąd przy zapisie do pliku');
+                return res.status(500).send('[-] Error 03');
             }
             res.send('[+] Connected with API');
         });
